@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "charity \u0441ards"
+        }, 
+        "charity \u0441ards": {
+            "applicationId": "X0UY3A7Y78VafC2i6LDnVce3FBd6WKN8TDXpHOkv", 
+            "masterKey": "w5bfAGA7eOrRd2FKUVxiuW2isNrn4A4MGyUvsCQ0"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.16"
+    }
+}
