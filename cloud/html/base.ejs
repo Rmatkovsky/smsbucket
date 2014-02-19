@@ -3,11 +3,15 @@
     <title>SMS Bucket</title>
     <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.6/require.min.js"></script>
     <script>
-//        require(['main']);
-        location.replace('/sms')
+        require(['/js/require.js'], function () {
+            require(['main']);
+        });
     </script>
 </head>
 <body>
-    SMS Bucket
+SMS Bucket
+<div id="pages">
+    <% include sms %>
+</div>
 </body>
 </html>
