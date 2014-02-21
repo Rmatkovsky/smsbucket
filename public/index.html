@@ -1,13 +1,48 @@
 <!DOCTYPE html>
-<head>
-    <title>SMS Bucket</title>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.6/require.min.js"></script>
-    <script>
-//        require(['main']);
-        location.replace('/sms')
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Parse JavaScript Todo App</title>
+    <link href="css/sms.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="js/underscore-1.1.6.js"></script>
+    <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+    <script src="js/init.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Todo App Interface -->
+
+    <div id="todoapp">
+      <div class="title">
+        <h1>SMS Bucket</h1>
+      </div>
+
+      <div class="content">
+      </div>
+    </div>
+
+
+
+    <!-- Templates -->
+
+    <script type="text/template" id="login-template">
+      <header id="header"></header>
+      <div class="login">
+        <h3>Enter your hash code for view SMS</h3>
+      </div>
     </script>
-</head>
-<body>
-    SMS Bucket
-</body>
+
+    <script type="text/template" id="smsblock">
+        <h2 style="padding-left: 50px;"><%= terms %></h2>
+        <h3 style="padding-left: 50px;"><%= template %></h3>
+        <img src="<%= imgurl %>" />
+    </script>
+    <script type="text/template" id="smsblockerror">
+        <h2 style="padding-left: 50px;"><%= error %></h2>
+    </script>
+
+  </body>
+
 </html>
