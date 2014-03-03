@@ -175,6 +175,14 @@ $(function() {
     },
 
     initialize: function(options) {
+        Parse.Cloud.run('httpRequest',{},{
+            success: function(res){
+                console.log(res)
+            },
+            error: function(res) {
+                console.log(res)
+            }
+        });
     },
 
     sms: function(id) {
