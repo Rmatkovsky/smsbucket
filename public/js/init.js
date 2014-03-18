@@ -17,115 +17,32 @@ $(function() {
         }
     })
 
-    models.Image = Parse.Object.extend("Pictures",{
-        defaults: function() {
-            return {
-                url_image: '',
-                url_image2x: '',
-                url_thumb: '',
-                url_thumb2x: ''
-            }
-        },
-        requiredFields: {
-            url_image: Parse.File,
-            url_image2x: Parse.File,
-            url_thumb: Parse.File,
-            url_thumb2x: Parse.File
-        }
-    });
 
-    models.Text = Parse.Object.extend("Texts",{
-        defaults: function() {
-            return {
-                template: '',
-                terms: ''
-            }
-        },
-        requiredFields: {
-            template: String,
-            terms: String
-        }
-    });
-
-    models.SmsHistory = Parse.Object.extend("sendsms",{
-        initialize: function() {
-            var self = this;
-        },
-        defaults: function() {
-            return {
-                imageId: null,
-                textId: null
-            }
-        },
-        requiredFields: {
-            imageId: models.Image,
-            textId: models.Text
-        }
-    });
-
-    models.ImageList = Parse.Collection.extend({
-        model: models.Image,
-        setQuery: function (options) {
-        },
-        fetch: 10
-    });
-
-    models.TextList = Parse.Collection.extend({
-        model: models.Text,
-        setQuery: function (options) {
-        },
-        fetch: 10
-    });
-
-    models.SmsList = Parse.Collection.extend({
-        model: models.SmsHistory,
-        setQuery: function (options) {
-
-            this.query.ascending('createdAt');
-        },
-        fetch: 10
-    });
-
-  var SmsView = Parse.View.extend({
+    var SmsView = Parse.View.extend({
     statsTemplate: _.template($('#smsblock').html()),
     errorTemplate: _.template($('#smsblockerror').html()),
-    terms: null,
     template: null,
     imgurl: null,
 
     el: ".content",
     initialize: function(options) {
         var self = this;
-        this.sms = new models.SmsList;
-        this.sms.query = new Parse.Query(models.SmsHistory);
-        this.sms.query.get(options.hash, {
-            success: function(item) {
-                this.text = new models.TextList;
-                this.text.query = new Parse.Query(models.Text)
-
-                this.image = new models.ImageList;
-                this.image.query = new Parse.Query(models.Image)
-                Parse.Promise.when(this.text.query.get(item.get('textId').id,{
-                        success: function(response) {
-                            self.terms = response.get('terms');
-                            self.template = response.get('template');
-
-                        }
-                    }), this.image.query.get(item.get('imageId').id,{
-                        success: function(response) {
-                            self.imgurl = response.get('url_image').url();
-                        }
-                    })).then(function() {
-                    self.render();
-                })
-
-
+        this.requestQuery = new Parse.Query("Requests");
+        this.requestQuery.get(options.hash, {
+            success: function(requestItem) {
+                self.imagesQuery = new Parse.Query("Pictures");
+                self.imagesQuery.get(requestItem.get('imageId').id,{
+                    success: function(imageItem){
+                        self.template = requestItem.get('text');
+                        self.imgurl = imageItem.get('url_image').url();
+                        self.render();
+                    }
+                });
             },
             error: function(object, error) {
                 self.render(error);
             }
         });
-
 
     },
 
@@ -148,46 +65,130 @@ $(function() {
 
       this.delegateEvents();
     }
-  });
+    });
+
+    var ConfirmView = Parse.View.extend({
+        statsTemplate: _.template($('#confirmblock').html()),
+        errorTemplate: _.template($('#confirmblockerror').html()),
+        el: ".content",
+        confirmId: null,
+        events: {
+        },
+        initialize: function(options) {
+            var self = this;
+            this.confirmId = options.hash;
+            this.requestQuery = new Parse.Query("Requests");
+            this.requestQuery.get(options.hash, {
+                success: function(requestItem) {
+                    self.sendDonation();
+                    self.render();
+                },
+                error: function(object, error) {
+                    self.render(error);
+                }
+            });
+
+        },
+
+        sendDonation: function(e) {
+            var self = this;
+            Parse.Cloud.run('sendDonation',{confirmId: self.confirmId},{
+                success: function(res){
+                    console.log(res)
+                },
+                error: function(res) {
+                    console.log(res)
+                }
+            });
+        },
+
+        render: function(error) {
+            var self = this;
+            if(!!error) {
+                this.$el.html(this.errorTemplate({
+                    error: error.message
+                }));
+            }
+            else
+            {
+                this.$el.html(this.statsTemplate({
+                    link: 'link'
+                }));
+            }
+
+            this.delegateEvents();
+        }
+    });
+
 
   // The main view for the app
   var AppView = Parse.View.extend({
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#todoapp"),
+    el: $("#smsapp"),
 
     initialize: function(attributes) {
         this.attr = attributes;
       this.render();
     },
-      getHash: function() {
-          return hash.get("hash")
-      },
 
     render: function() {
-        new SmsView(this.attr);
+        if(this.attr.view == 'sms') {
+            new SmsView(this.attr);
+        } else {
+            new ConfirmView(this.attr);
+        }
+
     }
   });
 
-  var AppRouter = Parse.Router.extend({
-    routes: {
-      "sms/:id": "sms"
-    },
+    var AppRouter = Parse.Router.extend({
+        routes: {
+            "sms/:id": "sms",
+            "confirm/:id": "confirm"
+        },
 
-    initialize: function(options) {
-        Parse.Cloud.run('httpRequest',{},{
-            success: function(res){
-                console.log(res)
-            },
-            error: function(res) {
-                console.log(res)
-            }
-        });
-    },
+        initialize: function(options) {
+//            Parse.Cloud.run('confirmPhoneNumber',{phoneNumber: 4550600468},{
+//                success: function(res){
+//                    console.log(res)
+//                },
+//                error: function(res) {
+//                    console.log(res)
+//                }
+//            });
+//            Parse.Cloud.run('checkSms',{requestId: 'QWjWSh9w86',smsCode: 8927},{
+//                success: function(res){
+//                    console.log(res)
+//                },
+//                error: function(res) {
+//                    console.log(res)
+//                }
+//            });
+//            Parse.Cloud.run('addDonation',{
+//                "senderName":"Sdfs",
+//                "photoId":"AYrFQa8fUM",
+//                "phoneNumber":"4550600468",
+//                "donate":50,
+//                "senderEmail":"Ewr",
+//                "greetingText":"Please create all AD, FD, ITD, Travel Requests and requests to other Ciklum departments in new ServiceDesk, and please update your bookmarks.",
+//                "recipientPhoneNumber":"4522671837"
+//            },{
+//                success: function(res){
+//                    console.log(res)
+//                },
+//                error: function(res) {
+//                    console.log(res)
+//                }
+//            });
+        },
+        sms: function(id) {
+            new AppView({hash:id,view: 'sms'});
+        },
+        confirm: function(id) {
+            new AppView({hash:id,view: 'confirm'});
+        }
 
-    sms: function(id) {
-        new AppView({hash:id});
-    }
   });
 
   var hash = new Hash;

@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Parse JavaScript Todo App</title>
-    <link href="css/sms.css" media="all" rel="stylesheet" type="text/css"/>
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <link href="css/sms.css" rel="stylesheet" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+      <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="js/underscore-1.1.6.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
     <script src="js/init.js"></script>
@@ -12,13 +15,9 @@
 
   <body>
 
-    <!-- Todo App Interface -->
+    <!-- App Interface -->
 
-    <div id="todoapp">
-      <div class="title">
-        <h1>SMS Bucket</h1>
-      </div>
-
+    <div id="smsapp">
       <div class="content">
       </div>
     </div>
@@ -35,11 +34,20 @@
     </script>
 
     <script type="text/template" id="smsblock">
-        <h2 style="padding-left: 50px;"><%= terms %></h2>
-        <h3 style="padding-left: 50px;"><%= template %></h3>
-        <img src="<%= imgurl %>" />
+        <h3><%= template %></h3>
+        <img src="<%= imgurl %>" width="350"/>
     </script>
     <script type="text/template" id="smsblockerror">
+        <h2 style="padding-left: 50px;"><%= error %></h2>
+    </script>
+    <script type="text/template" id="confirmblock">
+        <p>
+            Tak for dit bidrag på xx DKK til Røde Kors. <br />
+            <h1>cause <img src="/images/exclamation-mark.png" /> care</h1> <br />
+            Med venlig hilsen Cause I Care
+        </p>
+    </script>
+    <script type="text/template" id="confirmblockerror">
         <h2 style="padding-left: 50px;"><%= error %></h2>
     </script>
 
