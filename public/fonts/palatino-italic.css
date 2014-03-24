@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'PalatinoItalicRegular';
+    src: url('palatino-italic-1361506323.eot');
+    src: url('palatino-italic-1361506323.eot') format('embedded-opentype'),
+         url('palatino-italic-1361506323.woff') format('woff'),
+         url('palatino-italic-1361506323.ttf') format('truetype'),
+         url('palatino-italic-1361506323.svg#PalatinoItalicRegular') format('svg');
+}

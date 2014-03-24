@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'PalatinoItalicRegular';
+    src: url('/fonts/palatino-italic.eot');
+    src: url('/fonts/palatino-italic.eot') format('embedded-opentype'),
+    url('/fonts/palatino-italic.woff') format('woff'),
+    url('/fonts/palatino-italic.ttf') format('truetype'),
+    url('/fonts/palatino-italic.svg#PalatinoItalicRegular') format('svg');
+}
+
 html,body {
     margin: 0;
     padding: 0;
@@ -5,7 +14,7 @@ html,body {
 
 
 body {
-    font: 30px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font: 30px 'PalatinoItalicRegular';
     line-height: 1.4em;
     /*background: #eeeeee url('../images/bg.png');*/
     color: #4d4d4d;
@@ -32,6 +41,14 @@ body {
 h1 {
     font-size:48px
 }
+h3 {
+    font-family: 'Helvetica';
+    margin: 0;
+    margin-bottom: 20px;
+}
 .content {
     text-align: center;
+}
+p {
+    margin:0;
 }

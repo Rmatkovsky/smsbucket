@@ -34,17 +34,25 @@
     </script>
 
     <script type="text/template" id="smsblock">
-        <h3><%= template %></h3>
+        <p>
+            Via <br />
+            <img src="/images/exclamation-mark.png" /> <br />
+            har afsender af denne hilsenvalgt at give et bidrag til Røde Kors.
+        </p>
         <img src="<%= imgurl %>" width="350"/>
+        <h3><%= template %></h3>
+        <p>
+            Tryk på linketog hent selv cause I care app’en.
+        </p>
     </script>
     <script type="text/template" id="smsblockerror">
-        <h2 style="padding-left: 50px;"><%= error %></h2>
+        <h2><%= error %></h2>
     </script>
     <script type="text/template" id="confirmblock">
-        <p>
-            Tak for dit bidrag på xx DKK til Røde Kors. <br />
-            <h1>cause <img src="/images/exclamation-mark.png" /> care</h1> <br />
-            Med venlig hilsen Cause I Care
+        <p style="padding-top:50px;">
+            Tak for dit bidrag på <%= donation %> Kr. til Røde Kors. <br />
+            <img src="/images/exclamation-mark.png" /><br />
+            Med venlig hilsen Cause I Care.
         </p>
     </script>
     <script type="text/template" id="confirmblockerror">

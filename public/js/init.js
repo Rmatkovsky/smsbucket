@@ -72,16 +72,25 @@ $(function() {
         errorTemplate: _.template($('#confirmblockerror').html()),
         el: ".content",
         confirmId: null,
+        donation: 0,
         events: {
         },
         initialize: function(options) {
             var self = this;
             this.confirmId = options.hash;
             this.requestQuery = new Parse.Query("Requests");
-            this.requestQuery.get(options.hash, {
+            this.requestQuery.equalTo("objectId",options.hash);
+            this.requestQuery.equalTo("used",false);
+            this.requestQuery.find({
                 success: function(requestItem) {
-                    self.sendDonation();
-                    self.render();
+                    if(requestItem.length>0) {
+                        self.donation = requestItem[0].get('donation')
+                        self.sendDonation();
+                        self.render();
+                    } else {
+                        self.render({message: 'Object not found'});
+                    }
+
                 },
                 error: function(object, error) {
                     self.render(error);
@@ -112,7 +121,7 @@ $(function() {
             else
             {
                 this.$el.html(this.statsTemplate({
-                    link: 'link'
+                    donation: self.donation
                 }));
             }
 
