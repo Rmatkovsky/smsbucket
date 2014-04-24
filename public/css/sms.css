@@ -26,13 +26,15 @@ body {
     -o-font-smoothing: antialiased;
     font-smoothing: antialiased;
 }
-
+.clear {
+    clear: both;
+}
 #smsapp {
     background: #fff;
     background: rgba(255, 255, 255, 0.9);
     /*margin: 130px 0 40px 0;*/
     /*border: 1px solid #ccc;*/
-    position: relative;
+    /*position: relative;*/
     /*border-top-left-radius: 2px;*/
     /*border-top-right-radius: 2px;*/
     /*box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2),*/
@@ -45,10 +47,124 @@ h3 {
     font-family: 'Helvetica';
     margin: 0;
     margin-bottom: 20px;
+    font-size: 22px;
+}
+h4 {
+    font-family: 'Helvetica';
+    color: #000;
+    font-size: 100%;
+    margin: 0;
+    /*padding-bottom: 20px;*/
+}
+h5 {
+    font-family: 'Helvetica';
+    color: #000;
+    font-size: 16px;
+    margin: 0;
+    text-align: left;
+    line-height: 20px;
+    padding-left: 3px;
+    padding-bottom: 3px;
+}
+.step {
+    width: 100%;
+    text-align: center;
+}
+
+.step input {
+    border: 1px solid black;
+    font-size: 20px;
+    width: 100%;
+}
+.step section {
+    font-family: 'Arial';
+    font-size: 70%;
+    color: black;
+    padding: 1.5%;
+}
+.step section span {
+    float: left;
+    margin-top: -4%;
+}
+.step input[type=checkbox] {
+    float: left;
+    width: 2em;
+    height: 2em;
+}
+ul {
+    display: inline-block;
+    list-style: none;
+}
+ul li {
+    display: inline-block;
+    border-radius: 10px;
+    margin-right: 7%;
+    float: left;
+}
+ul li span {
+    font-size: 0.8em;
+    color: black;
+}
+.kr-select {
+    margin-top: 2%;
+    width: 50%;
+    padding: 0;
+    padding-left: 4%;
+}
+.kr-select  li {
+    border: 1px solid black;
+    width: 40%;
+    height: 40%;
+    margin-bottom: 7%;
+    padding-top: 10%;
+}
+.kr-select li:nth-child(odd) {
+    margin-left: 1%;
+}
+.kr-select li span {
+    color: black;
+}
+.kr-select li:hover {
+    border: 1px solid red;
+}
+.kr-select li.active {
+    border: 1px solid red;
+}
+.navigation {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+}
+.navigation b {
+    font-family: 'Arial';
+    font-size: 70%;
+    color: #000;
+}
+.navigation ul {
+    width: 50%;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    margin-left: 14%;
+}
+.navigation ul li {
+    border: 1px solid black;
+    width: 33%;
+    height: 35%;
+    padding-top: 4%;
+    margin-right: 3%;
+}
+.navigation ul li:hover {
+    border: 1px solid red;
 }
 .content {
     text-align: center;
 }
 p {
-    margin:0;
+    margin: 0;
+    font-size: 26px;
+}
+.helvetic {
+    font-family: 'Helvetica';
 }
