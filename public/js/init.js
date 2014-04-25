@@ -83,7 +83,7 @@ $(function() {
             this.requestQuery.find({
                 success: function(requestItem) {
                     if(requestItem.length>0) {
-                        self.donation = requestItem[0].get('donation')
+                        self.donation = requestItem[0].get('donation');
                         self.sendDonation();
                         self.render();
                     } else {
@@ -98,7 +98,7 @@ $(function() {
 
         },
 
-        sendDonation: function(e) {
+        sendDonation: function() {
             var self = this;
             Parse.Cloud.run('sendDonation',{confirmId: self.confirmId},{
                 success: function(res){
@@ -130,6 +130,7 @@ $(function() {
 
 
     var DonationView = Parse.View.extend({
+        sendsuccess: _.template($('#sendsuccess').html()),
         step4: _.template($('#step4').html()),
         step5: _.template($('#step5').html()),
         step6: _.template($('#step6').html()),
@@ -137,29 +138,31 @@ $(function() {
         image: null,
         options: {
             "phoneNumber":null,
-            "donation": 50,
-            "donatorName": null,
-            "email": null,
+            "donate": 50,
+            "senderName": null,
+            "senderEmail": null,
             "recipientPhoneNumber": null,
-            "imageId": null,
-            "text": null
+            "photoId": null,
+            "greetingText": null
         },
         events: {
             'click .kr-select li': 'selectDonation',
             'click .nextStep': 'nextToStep',
-            'click #backToApp': 'backToApp'
+            'click #backToApp': 'backToApp',
+            'click .sendDonation': 'sendDonation',
+            'click #newDonation': 'goToDonation'
         },
         initialize: function(options) {
             var self = this;
 
             this.options.recipientPhoneNumber = options.params.receiver_phone_number;
-            this.options.imageId = options.params.image_id;
-            this.options.text = options.params.greeting_text;
+            this.options.photoId = options.params.image_id;
+            this.options.greetingText = options.params.greeting_text;
 
             var Image = Parse.Object.extend("Pictures"),
                 imageQuery = new Parse.Query(Image);
 
-            imageQuery.get(this.options.imageId, {
+            imageQuery.get(this.options.photoId, {
                 success: function(image) {
                     self.image = image;
                 }
@@ -173,8 +176,8 @@ $(function() {
         nextToStep: function(e) {
             var step = $(e.target).data('step');
             if(step=='6') {
-                if((this.options.donatorName = this.$el.find('#donatorName').val()) &&
-                    (this.options.email = this.$el.find('#email').val()) &&
+                if((this.options.senderName = this.$el.find('#donatorName').val()) &&
+                    (this.options.senderEmail = this.$el.find('#email').val()) &&
                     (this.options.phoneNumber = this.$el.find('#phone').val())) {
 
                     this.render('step'+step);
@@ -184,10 +187,25 @@ $(function() {
                 this.render('step'+step);
             }
         },
+        goToDonation: function() {
+            Parse.history.navigate('newDonation');
+        },
         selectDonation: function(e) {
-            this.options.donation = $(e.target).data('donation');
+            this.options.donate = $(e.target).data('donation');
             $('.kr-select li').removeClass('active');
             $(e.target).addClass('active');
+        },
+        sendDonation: function(e) {
+            var self = this;
+            Parse.Cloud.run('addDonation',self.options,{
+                success: function(res){
+                    self.render('sendsuccess');
+                },
+                error: function(res) {
+                    alert('Repeat again, please!')
+                    console.log(res)
+                }
+            });
         },
         render: function(template) {
             var self = this;
@@ -196,17 +214,22 @@ $(function() {
                 case 'step4': {
                     this.$el.html(this.step4());
                     $('.kr-select li').removeClass('active');
-                    $('.kr-select li[data-donation="' + this.options.donation + '"]').addClass('active');
+                    $('.kr-select li[data-donation="' + this.options.donate + '"]').addClass('active');
                 } break;
-                case 'step5': {this.$el.html(this.step5({
-                    "donatorName": self.options.donatorName,
-                    "email": self.options.email,
-                    "phoneNumber": self.options.phoneNumber
-                }));} break;
-                case 'step6': {this.$el.html(this.step6({
-                    "imageUrl": self.image.get('url_image').url(),
-                    "greetingText": self.options.text
-                }));} break;
+                case 'step5': {
+                    this.$el.html(this.step5({
+                        "donatorName": self.options.senderName,
+                        "email": self.options.senderEmail,
+                        "phoneNumber": self.options.phoneNumber
+                   }));
+                } break;
+                case 'step6': {
+                    this.$el.html(this.step6({
+                        "imageUrl": (self.image)?self.image.get('url_image').url() : null,
+                        "greetingText": self.options.greetingText
+                    }));
+                } break;
+                case 'sendsuccess': { this.$el.html(this.sendsuccess()); }
             }
 
         }
@@ -284,7 +307,7 @@ $(function() {
             new AppView({hash:id,view: 'confirm'});
         },
         donation: function(params) {
-            new AppView ({params:JSON.parse(params), view:'donation'})
+            new AppView ({params:getQueryVariable(params), view:'donation'})
         }
 
   });
@@ -292,7 +315,17 @@ $(function() {
   var hash = new Hash;
 
   new AppRouter;
- //
   Parse.history.start();
 
 });
+
+function getQueryVariable(uri) {
+    var query = uri,
+        response = {};
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        response[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    }
+    return response;
+}

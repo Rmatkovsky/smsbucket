@@ -80,7 +80,7 @@ h5 {
     font-family: 'Arial';
     font-size: 70%;
     color: black;
-    padding: 1.5%;
+    padding: 2.5%;
 }
 .step section span {
     float: left;
@@ -111,25 +111,25 @@ ul li span {
     padding: 0;
     padding-left: 4%;
 }
-.kr-select  li {
-    border: 1px solid black;
-    width: 40%;
-    height: 40%;
-    margin-bottom: 7%;
-    padding-top: 10%;
-}
-.kr-select li:nth-child(odd) {
-    margin-left: 1%;
-}
-.kr-select li span {
-    color: black;
-}
-.kr-select li:hover {
-    border: 1px solid red;
-}
-.kr-select li.active {
-    border: 1px solid red;
-}
+/*.kr-select  li {*/
+    /*border: 1px solid black;*/
+    /*width: 40%;*/
+    /*height: 40%;*/
+    /*margin-bottom: 7%;*/
+    /*padding-top: 10%;*/
+/*}*/
+/*.kr-select li:nth-child(odd) {*/
+    /*margin-left: 1%;*/
+/*}*/
+/*.kr-select li span {*/
+    /*color: black;*/
+/*}*/
+/*.kr-select li:hover {*/
+    /*border: 1px solid red;*/
+/*}*/
+/*.kr-select li.active {*/
+    /*border: 1px solid red;*/
+/*}*/
 .navigation {
     position: absolute;
     width: 100%;
@@ -149,14 +149,30 @@ ul li span {
     margin-left: 14%;
 }
 .navigation ul li {
-    border: 1px solid black;
-    width: 33%;
-    height: 35%;
-    padding-top: 4%;
-    margin-right: 3%;
+    background-image: url(/images/sprites.png);
+    width: 61px;
+    height: 58px;
+
 }
-.navigation ul li:hover {
-    border: 1px solid red;
+
+.navigation .nextStep {
+    background-position: -162px 0px;
+}
+.navigation .back {
+     background-position: -162px -128px;
+ }
+.navigation .sendDonation {
+    background-position: -162px -64px;
+}
+
+.navigation .nextStep:hover {
+    background-position: -226px 0px;
+}
+.navigation .back:hover {
+    background-position: -226px -128px;
+}
+.navigation .sendDonation:hover {
+    background-position: -226px -64px;
 }
 .content {
     text-align: center;
@@ -167,4 +183,53 @@ p {
 }
 .helvetic {
     font-family: 'Helvetica';
+}
+#newDonation {
+    font-size: 65%;
+    color: #4A8FFF;
+    text-decoration: none;
+    bottom: 0;
+    position: absolute;
+    left: 50%;
+    margin-left: -18%;
+}
+.kr-select li {
+    margin-bottom: 5px;
+    background-image: url(/images/sprites.png);
+    width: 75px;
+    height: 74px;
+
+}
+.kr-select .kr25 {
+    background-position: 0px 0px;
+
+}
+.kr-select .kr50 {
+    background-position: 0px -77px;
+}
+.kr-select .kr75 {
+    background-position: 0px -154px;
+}
+.kr-select .kr100 {
+    background-position: 0px -231px;
+}
+.kr-select .kr25:hover,
+.kr-select .kr25.active
+{
+    background-position: -79px 0px;
+}
+.kr-select .kr50:hover,
+.kr-select .kr50.active
+{
+    background-position: -79px -77px;
+}
+.kr-select .kr75:hover,
+.kr-select .kr75.active
+{
+    background-position: -79px -154px;
+}
+.kr-select .kr100:hover,
+.kr-select .kr100.active
+{
+    background-position: -79px -231px;
 }
