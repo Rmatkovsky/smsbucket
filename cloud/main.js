@@ -109,6 +109,68 @@ Parse.Cloud.define('sendDonation', function(request, response) {
     }
 
 });
+
+Parse.Cloud.define('postDonation', function(request, response) {
+
+    var Requests = Parse.Object.extend("Requests"),
+        requests = {};
+
+    if(!!request.params.phoneNumber) {
+
+        requests = new Requests();
+
+        requests.set({
+            phoneNumber: request.params.phoneNumber
+        });
+
+        var Image = Parse.Object.extend("Pictures"),
+            imageQuery = new Parse.Query(Image),
+            photoId = parseInt(request.params.photoId),
+            mediacode = null;
+
+        imageQuery.get(photoId, {
+            success: function(images) {
+                requests.set("donation", ""+request.params.donate);
+                requests.set("donatorName", ""+request.params.senderName);
+                requests.set("email", ""+request.params.senderEmail);
+                requests.set("recipientPhoneNumber", request.params.recipientPhoneNumber);
+                requests.set("imageId",  images);
+                requests.set("text",""+request.params.greetingText);
+                requests.set("used",false);
+                requests.save(null,{
+                    success: function(saveRequest) {
+                        httpRequest({
+                                phoneNumber: request.params.phoneNumber,
+                                text: 'Tryk på linket http://causeicare.parseapp.com/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
+                                response: response
+                            },
+                            function() {
+                                response.success({status: 200});
+                            });
+                    },
+                    error: function(request) {
+
+                        response.error({status: 501});
+                    }
+                })
+            },
+            error: function() {
+
+                response.error({status: 501});
+            }
+        })
+
+
+
+
+    } else {
+        response.error({status: 400});
+    }
+
+});
+
+
+
 function httpRequest(params,callback) {
     var dParams = {
         user: cfg.username,

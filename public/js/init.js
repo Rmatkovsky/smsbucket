@@ -134,6 +134,7 @@ $(function() {
         step5: _.template($('#step5').html()),
         step6: _.template($('#step6').html()),
         el: ".content",
+        image: null,
         options: {
             "phoneNumber":null,
             "donation": 50,
@@ -149,10 +150,21 @@ $(function() {
             'click #backToApp': 'backToApp'
         },
         initialize: function(options) {
+            var self = this;
+
             this.options.recipientPhoneNumber = options.params.receiver_phone_number;
             this.options.imageId = options.params.image_id;
             this.options.text = options.params.greeting_text;
-            console.log(options)
+
+            var Image = Parse.Object.extend("Pictures"),
+                imageQuery = new Parse.Query(Image);
+
+            imageQuery.get(this.options.imageId, {
+                success: function(image) {
+                    self.image = image;
+                }
+            });
+
             this.render('step4');
         },
         backToApp: function() {
@@ -192,6 +204,7 @@ $(function() {
                     "phoneNumber": self.options.phoneNumber
                 }));} break;
                 case 'step6': {this.$el.html(this.step6({
+                    "imageUrl": self.image.get('url_image').url(),
                     "greetingText": self.options.text
                 }));} break;
             }
@@ -281,4 +294,5 @@ $(function() {
   new AppRouter;
  //
   Parse.history.start();
+
 });
