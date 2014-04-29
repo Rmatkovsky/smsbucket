@@ -25,6 +25,12 @@ body {
     -ms-font-smoothing: antialiased;
     -o-font-smoothing: antialiased;
     font-smoothing: antialiased;
+
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
 }
 .clear {
     clear: both;
@@ -74,7 +80,8 @@ h5 {
 .step input {
     border: 1px solid black;
     font-size: 20px;
-    width: 100%;
+    width: 90%;
+    margin-right: 3%;
 }
 .step section {
     font-family: 'Arial';
@@ -107,7 +114,7 @@ ul li span {
 }
 .kr-select {
     margin-top: 2%;
-    width: 50%;
+    width: 56%;
     padding: 0;
     padding-left: 4%;
 }
@@ -142,37 +149,37 @@ ul li span {
     color: #000;
 }
 .navigation ul {
-    width: 50%;
+    width: 56%;
     margin: 0;
     padding: 0;
     display: inline-block;
     margin-left: 14%;
 }
 .navigation ul li {
-    background-image: url(/images/sprites.png);
+    background-image: url(/images/sprites1.png);
     width: 61px;
     height: 58px;
-
+    background-size: 451%;
 }
 
 .navigation .nextStep {
-    background-position: -162px 0px;
+    background-position: -146px 2px;
 }
 .navigation .back {
-     background-position: -162px -128px;
+    background-position: -146px -115px;
  }
 .navigation .sendDonation {
-    background-position: -162px -64px;
+    background-position: -146px -56px;
 }
 
 .navigation .nextStep:hover {
-    background-position: -226px 0px;
+    background-position: -205px 2px;
 }
 .navigation .back:hover {
-    background-position: -226px -128px;
+    background-position: -205px -115px;
 }
 .navigation .sendDonation:hover {
-    background-position: -226px -64px;
+    background-position: -205px -56px;
 }
 .content {
     text-align: center;
@@ -195,41 +202,42 @@ p {
 }
 .kr-select li {
     margin-bottom: 5px;
-    background-image: url(/images/sprites.png);
+    background-image: url(/images/sprites1.png);
     width: 75px;
     height: 74px;
+    background-size: 385%;
 
 }
 .kr-select .kr25 {
-    background-position: 0px 0px;
+    background-position: 2px 1px;
 
 }
 .kr-select .kr50 {
-    background-position: 0px -77px;
+    background-position: 1px -73px;
 }
 .kr-select .kr75 {
-    background-position: 0px -154px;
+    background-position: 2px -147px;
 }
 .kr-select .kr100 {
-    background-position: 0px -231px;
+    background-position: 2px -221px;
 }
 .kr-select .kr25:hover,
 .kr-select .kr25.active
 {
-    background-position: -79px 0px;
+    background-position: -74px 1px;
 }
 .kr-select .kr50:hover,
 .kr-select .kr50.active
 {
-    background-position: -79px -77px;
+    background-position: -75px -73px;
 }
 .kr-select .kr75:hover,
 .kr-select .kr75.active
 {
-    background-position: -79px -154px;
+    background-position: -74px -147px;
 }
 .kr-select .kr100:hover,
 .kr-select .kr100.active
 {
-    background-position: -79px -231px;
+    background-position: -74px -221px;
 }

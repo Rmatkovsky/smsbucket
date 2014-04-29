@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Cause I care</title>
-    <link href="css/sms.css" rel="stylesheet" type="text/css"/>
+    <link href="css/sms.css?v=0.6" rel="stylesheet" type="text/css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="SMS Bucket hello">
 
@@ -35,8 +35,10 @@
     <script type="text/template" id="sendsuccess">
         <p style="padding-top:50px;">
             Tak fordi du sendte en<br />hilsen med. <br /><br />
-            <img src="./images/exclamation-mark.png" style="width:70%;" /><br /><br />
-            Du vik modtage en sms <br /> for bekreftelse af din<br /> hilsen og donation. <br />
+            <a href="http://www.causeicare.dk">
+                <img src="/images/exclamation-mark.png" style="width: 70%;" />
+            </a><br /><br />
+            Du vil modtage en sms <br /> for bekræftelse af din<br /> hilsen og donation. <br />
             <a href="#" class="newDonation">Send en ny hilsen</a>
         </p>
     </script>
@@ -44,7 +46,7 @@
     <script type="text/template" id="step6">
         <div class="step">
             <h4>godkend hilsen</h4>
-            <section style="border:1px solid black;border-radius:10px; margin: 2%; ">
+            <section style="border:1px solid black;border-radius:10px; margin: 2%;min-height: 217px; ">
                 <img src="<%= imageUrl %>" style="width: 75%"/>
                 <h5 style="text-align: left;overflow: overlay;"><%= greetingText %> </h5>
             </section>
@@ -85,7 +87,7 @@
     </script>
     <script type="text/template" id="step4">
         <div class="step">
-            <h4>valg sms-donation</h4>
+            <h4>vælg sms-donation</h4>
             <section>
                 <img src="./images/img_red_cross.png" style="width: 17%;"/>
             </section>
@@ -119,12 +121,17 @@
         <img src="<%= imgurl %>" style="width: 75%;"/>
         <h3><%= template %></h3>
         <p>
-            <img src="/images/exclamation-mark.png" style="width: 70%;" /> <br />
+            <a href="http://www.causeicare.dk">
+                <img src="/images/exclamation-mark.png" style="width: 70%;" />
+            </a><br />
             Afsender har med denne hilsen valgt at give et bidrag til Røde Kors
         </p> <br />
         <p class="helvetic">
             <a href="#" onclick="fbShare();"><img src="/images/fb-button.png" style="width: 55%;" /></a> <br /> <br />
-            <img src="/images/appicon.png" /><br />
+            <a href="https://itunes.apple.com/us/app/cause-i-care/id859109162?l=ru&ls=1&mt=8">
+                <img src="/images/appicon.png" />
+            </a>
+            <br />
             Tryk på linket og hent selv cause I care app’en.
         </p>
     </script>
@@ -135,7 +142,9 @@
         <p style="padding-top:50px;">
             Tak for dit bidrag<br /> på <%= donation %> Kr. til Røde Kors. <br /><br />
             Med venlig hilsen.<br /><br />
-            <img src="/images/exclamation-mark.png" style="width: 70%;" /><br /><br />
+            <a href="http://www.causeicare.dk">
+                <img src="/images/exclamation-mark.png" style="width: 70%;" />
+            </a><br /><br />
             <a href="#" onclick="fbShare();"><img src="/images/fb-button.png" style="width: 55%;" /></a>
         </p>
     </script>

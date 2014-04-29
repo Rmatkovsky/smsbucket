@@ -202,8 +202,13 @@ $(function() {
                     self.render('sendsuccess');
                 },
                 error: function(res) {
-                    alert('Repeat again, please!')
-                    console.log(res)
+                    var result = JSON.parse(res.message);
+
+                    switch(result.status+''){
+                        case '400': alert('Kontroller venligst det indtastede og prøv igen');break;
+                        case '501': alert('Tjenesten er midlertidig utilgængelig. Prøv venligst senere');break;
+                        default : alert('Unknown error');
+                    }
                 }
             });
         },
@@ -263,7 +268,8 @@ $(function() {
         routes: {
             "sms/:id": "sms",
             "confirm/:id": "confirm",
-            "donation/:params":"donation"
+            "donation/:params":"donation",
+            "callback/:params":"callback"
         },
 
         initialize: function(options) {
@@ -283,6 +289,7 @@ $(function() {
 //                    console.log(res)
 //                }
 //            });
+//            console.log(1);
 //            Parse.Cloud.run('addDonation',{
 //                "senderName":"Sdfs",
 //                "photoId":"AYrFQa8fUM",
@@ -308,6 +315,18 @@ $(function() {
         },
         donation: function(params) {
             new AppView ({params:getQueryVariable(params), view:'donation'})
+        },
+        callback: function(params){
+            var Requests = Parse.Object.extend("Request"),
+                requestsQuery = new Parse.Query("Requests"),
+                jParams = getQueryVariable(params);
+
+            requestsQuery.get(jParams.sessionid, {
+                success: function(item) {
+                    item.set('status',jParams.statuscode);
+                    item.save();
+                }
+            });
         }
 
   });
