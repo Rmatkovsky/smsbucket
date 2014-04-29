@@ -89,7 +89,7 @@ Parse.Cloud.define('sendDonation', function(request, response) {
                                     phoneNumber:item.get('phoneNumber'),
                                     sessionid: item.id,
                                     donation: item.get('donation'),
-                                    text: 'Tak for dit bidrag på ' + item.get('donation') + ' til Røde Kors. Med venlig hilsen Cause I Care',
+                                    text: 'Tak for dit bidrag på ' + item.get('donation') + ' Kr til Røde Kors. Med venlig hilsen Cause I Care',
                                     response: response,
                                     mediacode: mediacode
                                 },
@@ -113,20 +113,24 @@ Parse.Cloud.define('sendDonation', function(request, response) {
 });
 
 function httpRequest(params,callback) {
+    var donation = params.donation ? parseFloat(params.donation) : 0;
     var dParams = {
         user: cfg.username,
         password: cfg.password,
         to: params.phoneNumber,
 //            smsc: 'dk.tdc',
-        price: params.donation ? params.donation+'DKK':'0.00DKK',
+        price: '' + donation.toFixed(2) + 'DKK',
         appnr: '1231',
         text: params.text,
         mediacode: 'afrika',
         preferredencoding: 'UTF-8'
     }
+
     if(!!params.mediacode) {
         dParams.mediacode = params.mediacode;
-        dParams.vat = '0.00';
+        if (donation) {
+	        dParams.vat = '0.00';
+	    }
     }
     if(!!params.sessionid) {
         dParams.sessionid = params.sessionid;
