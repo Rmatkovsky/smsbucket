@@ -4,22 +4,42 @@ var cfg = {
     unwireUrl: 'http://gw.unwire.com/service/smspush'
 }
 
+function trimPhoneNumber(phone) {
+    var re160 = new RegExp(String.fromCharCode(160),"g");
+	var trimmedPhone = phone.replace(re160, '').replace(/\+/g, '');
+
+	return trimmedPhone;
+}
+
 Parse.Cloud.define('addDonation', function(request, response) {
 
     var Requests = Parse.Object.extend("Requests"),
         requests = {};
+    var phoneNumber = request.params.phoneNumber;
 
-    if(!!request.params.phoneNumber) {
+	if (phoneNumber) {
+		phoneNumber = trimPhoneNumber(phoneNumber);
+		console.log("phoneNumber: " + phoneNumber);
+	}
+
+    var recipientPhoneNumber = request.params.recipientPhoneNumber;
+
+	if (recipientPhoneNumber) {
+		recipientPhoneNumber = trimPhoneNumber(recipientPhoneNumber);
+		console.log("recipientPhoneNumber: " + recipientPhoneNumber);
+	}
+
+    if(!!phoneNumber) {
 
         requests = new Requests();
 
         requests.set({
-            phoneNumber: request.params.phoneNumber
+            phoneNumber: phoneNumber
         });
 
         var Image = Parse.Object.extend("Pictures"),
             imageQuery = new Parse.Query(Image),
-            photoId = parseInt(request.params.photoId),
+            photoId = request.params.photoId,
             mediacode = null;
 
         imageQuery.get(photoId, {
@@ -27,14 +47,14 @@ Parse.Cloud.define('addDonation', function(request, response) {
                 requests.set("donation", ""+request.params.donate);
                 requests.set("donatorName", ""+request.params.senderName);
                 requests.set("email", ""+request.params.senderEmail);
-                requests.set("recipientPhoneNumber", request.params.recipientPhoneNumber);
+                requests.set("recipientPhoneNumber", recipientPhoneNumber);
                 requests.set("imageId",  images);
                 requests.set("text",""+request.params.greetingText);
                 requests.set("used",false);
                 requests.save(null,{
                     success: function(saveRequest) {
                         httpRequest({
-                                phoneNumber: request.params.phoneNumber,
+                                phoneNumber: phoneNumber,
                                 text: 'Tryk på linket http://causeicare.parseapp.com/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
                                 response: response
                             },
