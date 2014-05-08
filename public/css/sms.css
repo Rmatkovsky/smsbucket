@@ -17,7 +17,7 @@ body {
     font: 30px 'PalatinoItalicRegular';
     line-height: 1.4em;
     /*background: #eeeeee url('../images/bg.png');*/
-    color: #4d4d4d;
+    /*color: #4d4d4d;*/
     /*width: 550px;*/
     margin: 0 auto;
     -webkit-font-smoothing: antialiased;
@@ -51,9 +51,15 @@ h1 {
 }
 h3 {
     font-family: 'Helvetica';
+    font-size: 20px;
+    font-weight: normal;
     margin: 0;
     margin-bottom: 20px;
-    font-size: 22px;
+    color: black;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: left;
+    line-height: 30px;
 }
 h4 {
     font-family: 'Helvetica';
@@ -186,7 +192,11 @@ ul li span {
 }
 p {
     margin: 0;
-    font-size: 26px;
+    font-size: 22px;
+    line-height: 30px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 .helvetic {
     font-family: 'Helvetica';
