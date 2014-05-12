@@ -6,7 +6,7 @@ var cfg = {
 
 function trimPhoneNumber(phone) {
     var re160 = new RegExp(String.fromCharCode(160),"g");
-	var trimmedPhone = phone.replace(re160, '').replace(/\+/g, '');
+	var trimmedPhone = phone.replace(re160, '').replace(/\D+/g, '');
 
 	return trimmedPhone;
 }
