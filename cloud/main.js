@@ -100,13 +100,13 @@ Parse.Cloud.define('sendDonation', function(request, response) {
                         case '100': mediacode = 'bouquet100';break;
                     }
                     httpRequest({
-                            phoneNumber: item.get('recipientPhoneNumber'),
+                            phoneNumber: trimPhoneNumber(item.get('recipientPhoneNumber')),
                             text: item.get('donatorName') + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.parseapp.com/#/sms/' + item.id + ' for at se din hilsen.',
                             response: response
                         },
                         function() {
                             httpRequest({
-                                    phoneNumber:item.get('phoneNumber'),
+                                    phoneNumber: trimPhoneNumber(item.get('phoneNumber')),
                                     sessionid: item.id,
                                     donation: item.get('donation'),
                                     text: 'Tak for dit bidrag på ' + item.get('donation') + ' Kr til Røde Kors. Med venlig hilsen Cause I Care',
