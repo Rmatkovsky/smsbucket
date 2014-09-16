@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "_default": {
+            "link": "qa cause i care"
+        }, 
+        "qa cause i care": {
+            "applicationId": "q5uk1NhQDpJYQqHCpTBqr0lRcR0x3gu411GwQ3Pj", 
+            "masterKey": "PE2TSXLvhg0pXQDJ2EhklqzhQQK1Jw8ihg1jgcAk"
+        }
+    }
+}

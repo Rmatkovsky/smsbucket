@@ -1,77 +1,123 @@
 var cfg = {
-    username: 'redcross',
-    password: 'GE8pKfgdG',
-    unwireUrl: 'http://gw.unwire.com/service/smspush'
-}
+        username: 'redcross',
+        password: 'GE8pKfgdG',
+        gatewayUrl: 'http://causeicare.dk/test/pay4it/pay.php'
+    },
+    testPhone = ['004522798828','004520450201','004522671837'];
 
 function trimPhoneNumber(phone) {
     var re160 = new RegExp(String.fromCharCode(160),"g");
 	var trimmedPhone = phone.replace(re160, '').replace(/\D+/g, '');
 
 	return trimmedPhone;
-}
+};
+
+Parse.Cloud.define('jqueryAjax', function(request,response) {
+    Parse.Cloud.httpRequest({
+        url: cfg.unwireUrl,
+        success: function(httpResponse) {
+            response.success(httpResponse)
+
+        },
+        error: function(httpResponse) {
+            response.error(httpResponse)
+        }
+    });
+    // request.jQuery.ajax(
+    //     {
+    //         url:'https://api.pay4it.dk:8090/json/SendSMS',
+    //         type: 'GET',
+    //         data: {
+    //             'Message': 'Hello Ciklum 4 part',
+    //             'Recipient': '4522671837'
+    //         },
+    //         headers: {
+    //             'UserName':'ji@cphpress.com',
+    //             'Password': 'e8d34dcd-fb24-4ae5-9591-31a0abe38eb9',
+    //             'Pay4itSecurity': 'e18bb807-5b12-40f3-ad22-0d3a2af8be0e'
+    //         }
+    //     }
+    // ).done(function(data){response.success(data)})
+});
 
 Parse.Cloud.define('addDonation', function(request, response) {
 
-    var Requests = Parse.Object.extend("Requests"),
-        requests = {};
     var phoneNumber = request.params.phoneNumber;
 
 	if (phoneNumber) {
 		phoneNumber = trimPhoneNumber(phoneNumber);
-		console.log("phoneNumber: " + phoneNumber);
-	}
+	};
 
     var recipientPhoneNumber = request.params.recipientPhoneNumber;
 
 	if (recipientPhoneNumber) {
 		recipientPhoneNumber = trimPhoneNumber(recipientPhoneNumber);
-		console.log("recipientPhoneNumber: " + recipientPhoneNumber);
-	}
+	};
 
     if(!!phoneNumber) {
-
-        requests = new Requests();
+        var Requests = Parse.Object.extend("Requests"),
+            requests = new Requests();
 
         requests.set({
             phoneNumber: phoneNumber
         });
 
-        var Image = Parse.Object.extend("Pictures"),
+        var Image = (request.params.userImage) ? Parse.Object.extend("ImageFromUsers") : Parse.Object.extend("Pictures"),
             imageQuery = new Parse.Query(Image),
             photoId = request.params.photoId,
-            mediacode = null;
+            Charities = Parse.Object.extend("Charities"),
+            charityQuery = new Parse.Query(Charities),
+            charityId = request.params.charityId,
+            userImage = (request.params.userImage) ? true : false ;
 
-        imageQuery.get(photoId, {
-            success: function(images) {
-                requests.set("donation", ""+request.params.donate);
-                requests.set("donatorName", ""+request.params.senderName);
-                requests.set("email", ""+request.params.senderEmail);
-                requests.set("recipientPhoneNumber", recipientPhoneNumber);
-                requests.set("imageId",  images);
-                requests.set("text",""+request.params.greetingText);
-                requests.set("used",false);
-                requests.save(null,{
-                    success: function(saveRequest) {
-                        httpRequest({
-                                phoneNumber: phoneNumber,
-                                text: 'Tryk på linket http://causeicare.parseapp.com/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
-                                response: response
+
+        charityQuery.get(charityId, {
+            success: function(charity) {
+                requests.set("charityId", charity);
+
+                imageQuery.get(photoId, {
+                    success: function(images) {
+                        requests.set("donation", "" + request.params.donate);
+                        requests.set("donatorName", "" + request.params.senderName);
+                        requests.set("email", "" + request.params.senderEmail);
+                        requests.set("recipientPhoneNumber", recipientPhoneNumber);
+                        requests.set("userImage", !!request.params.userImage);
+                        requests.set("text","" + request.params.greetingText);
+                        requests.set("used", false);
+                        if(request.params.userImage) {
+                            requests.set("imageFromUserId", images);
+                        } else {
+                            requests.set("imageId", images);
+                        };
+
+                        requests.save(null, {
+                            success: function(saveRequest) {
+                                httpRequest({
+                                        phoneNumber: phoneNumber,
+                                        text: 'Tryk på linket http://causeicare.parseapp.com/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
+                                        response: response,
+                                        sessionid: saveRequest.id
+                                    },
+                                    function( ) {
+                                        response.success({status: 200});
+                                    });
                             },
-                            function() {
-                                response.success({status: 200});
-                            });
-                    },
-                    error: function(request) {
+                            error: function(request) {
 
-                        response.error({status: 501});
+                                response.error(request);
+                            }
+                        })
+                    },
+                    error: function() {
+                        response.error({status: 501, method: 'image'});
                     }
-                })
+                });
             },
             error: function() {
-               response.error({status: 501});
+                response.error({status: 501, method: 'charity'});
             }
-        })
+        });
+
 
 
 
@@ -113,7 +159,7 @@ Parse.Cloud.define('sendDonation', function(request, response) {
                                     response: response,
                                     mediacode: mediacode
                                 },
-                                function() {
+                                function( ) {
                                     item.set("used",true);
                                     item.save();
                                     response.success({status: 200});
@@ -132,44 +178,52 @@ Parse.Cloud.define('sendDonation', function(request, response) {
 
 });
 
-function httpRequest(params,callback) {
-    var donation = params.donation ? parseFloat(params.donation) : 0;
-    var dParams = {
-        user: cfg.username,
-        password: cfg.password,
-        to: params.phoneNumber,
-//            smsc: 'dk.tdc',
-        price: '' + donation.toFixed(2) + 'DKK',
-        appnr: '1231',
-        text: params.text,
-        mediacode: 'afrika',
-        preferredencoding: 'UTF-8'
-    }
+    function httpRequest(params,callback) {
+    //var donation = params.donation ? parseFloat(params.donation) : 0;
+//
+//
+//    var dParams = {
+//        user: cfg.username,
+//        password: cfg.password,
+//        to: params.phoneNumber,
+////            smsc: 'dk.tdc',
+//        price: '' + donation.toFixed(2) + 'DKK',
+//        appnr: '1231',
+//        text: params.text,
+//        mediacode: 'afrika',
+//        preferredencoding: 'UTF-8'
+//    };
 
-    if(!!params.mediacode) {
-        dParams.mediacode = params.mediacode;
-        if (donation) {
-	        dParams.vat = '0.00';
-	    }
-    }
-    if(!!params.sessionid) {
-        dParams.sessionid = params.sessionid;
-        dParams.callbackurl = 'http://causeicare.parseapp.com/#/callback/';
-    }
+    //if( !!params.mediacode ) {
+    //    dParams.mediacode = params.mediacode;
+    //    if (donation) {
+	 //       dParams.vat = '0.00';
+	 //   }
+    //}
+    //if( !!params.sessionid ) {
+    //    dParams.sessionid = params.sessionid;
+    //    dParams.callbackurl = 'http://qa-causeicare.parseapp.com/#/callback/';
+    //}
+    //
+    //if( testPhone.indexOf( params.phoneNumber ) !== -1) {
+    //    dParams.price = '0.00DKK', dParams.mediacode = 'afrika';
+    //    delete( dParams.vat );
+    //}
 
     Parse.Cloud.httpRequest({
-        url: cfg.unwireUrl,
-        params: dParams,
-        success: function(httpResponse) {
-            callback();
+        url: cfg.gatewayUrl,
+        method: 'POST',
+        body: {
+            'message': params.text,
+            'recipient': params.phoneNumber,
+            'sendSMS': 'true'
+        },
 
+        success: function() {
+            callback();
         },
         error: function(httpResponse) {
-            if(httpResponse.status == 400) {
-                params.response.error({status: 400});
-            } else {
-                params.response.error({status: 500});
-            }
+            params.response.error(httpResponse)
         }
     });
 }

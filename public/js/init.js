@@ -1,21 +1,26 @@
-// An example Parse.js Backbone application based on the todo app by
-// [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses Parse to persist
-// the todo items and provide user authentication and sessions.
-
+var config = {
+    prodAppId: "X0UY3A7Y78VafC2i6LDnVce3FBd6WKN8TDXpHOkv",
+    prodKey: "zHM3CGx2uWTbzE4Ek1CPSWAzHt3QC8amCC1tI0gT",
+    devAppId: "q5uk1NhQDpJYQqHCpTBqr0lRcR0x3gu411GwQ3Pj",
+    devKey: "PeXa2dSX28JuIna6WqvdeLGZjepHJ7T5lSwaqR6T"
+};
 $(function() {
 
   Parse.$ = jQuery;
 
   // Initialize Parse with your Parse application javascript keys
-  Parse.initialize("X0UY3A7Y78VafC2i6LDnVce3FBd6WKN8TDXpHOkv",
-                   "zHM3CGx2uWTbzE4Ek1CPSWAzHt3QC8amCC1tI0gT");
+    if( location.hostname === "qa-causeicare.parseapp.com" ) {
+        Parse.initialize( config.devAppId, config.devKey );
+    } else {
+        Parse.initialize( config.prodAppId, config.prodKey );
+    };
 
     var models = typeof exports === 'undefined' ? {} : exports;
     var Hash = Parse.Object.extend("Hash",{
         default: {
             hash: null
         }
-    })
+    });
 
 
     var SmsView = Parse.View.extend({
@@ -269,7 +274,8 @@ $(function() {
             "sms/:id": "sms",
             "confirm/:id": "confirm",
             "donation/:params":"donation",
-            "callback/:params":"callback"
+            "callback/:params":"callback",
+            "qa": "qa"
         },
 
         initialize: function(options) {
@@ -290,22 +296,33 @@ $(function() {
 //                }
 //            });
 //            console.log(1);
-//            Parse.Cloud.run('addDonation',{
-//                "senderName":"Sdfs",
-//                "photoId":"AYrFQa8fUM",
-//                "phoneNumber":"004522798828",
-//                "donate":50,
-//                "senderEmail":"Ewr",
-//                "greetingText":"Please create all AD, FD, ITD, Travel Requests and requests to other Ciklum departments in new ServiceDesk, and please update your bookmarks.",
-//                "recipientPhoneNumber":"004522798828"
-//            },{
-//                success: function(res){
-//                    console.log(res)
-//                },
-//                error: function(res) {
-//                    console.log(res)
-//                }
+//            Parse.Cloud.run('jqueryAjax', {jQuery: 'jQuery'},{
+//                        success: function(res){
+//                            console.log(res)
+//                        },
+//                        error: function(res) {
+//                            console.log(res)
+//                        }
 //            });
+
+            //Parse.Cloud.run('addDonation',{
+            //    "senderName": "Sdfs",
+            //    "photoId": "NsybvX5whw",
+            //    "userImage": true,
+            //    "charityId": "9B2D1884Io",
+            //    "phoneNumber": "4522671837",
+            //    "donate": 50,
+            //    "senderEmail": "Ewr",
+            //    "greetingText": "Please create all AD, FD, ITD, Travel Requests and requests to other Ciklum departments in new ServiceDesk, and please update your bookmarks.",
+            //    "recipientPhoneNumber": "4522671837"
+            //},{
+            //    success: function(res){
+            //        console.log(res)
+            //    },
+            //    error: function(res) {
+            //        console.log(res)
+            //    }
+            //});
         },
         sms: function(id) {
             new AppView({hash:id,view: 'sms'});
@@ -316,10 +333,29 @@ $(function() {
         donation: function(params) {
             new AppView ({params:getQueryVariable(params), view:'donation'})
         },
+        qa: function() {
+            Parse.Cloud.run('addDonation',{
+                "senderName":"Sdfs",
+                "photoId":"V5cJGWmsBb",
+                "phoneNumber":"4522671837",
+                "donate":50,
+                "senderEmail":"Ewr",
+                "greetingText":"Please create all AD, FD, ITD, Travel Requests and requests to other Ciklum departments in new ServiceDesk, and please update your bookmarks.",
+                "recipientPhoneNumber":"4522671837"
+            },{
+                success: function(res){
+                    console.log(res)
+                },
+                error: function(res) {
+                    console.log(res)
+                }
+            });
+        },
         callback: function(params){
             var Requests = Parse.Object.extend("Request"),
                 requestsQuery = new Parse.Query("Requests"),
                 jParams = getQueryVariable(params);
+            console.log(jParams)
 
             requestsQuery.get(jParams.sessionid, {
                 success: function(item) {
@@ -339,8 +375,9 @@ $(function() {
 });
 
 function getQueryVariable(uri) {
-    var query = uri,
+    var query = uri.replace("?",""),
         response = {};
+    console.log(query)
     var vars = query.split('&');
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');

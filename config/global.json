@@ -3,9 +3,17 @@
         "_default": {
             "link": "charity \u0441ards"
         }, 
+        "cause I care": {
+            "applicationId": "X0UY3A7Y78VafC2i6LDnVce3FBd6WKN8TDXpHOkv", 
+            "masterKey": "w5bfAGA7eOrRd2FKUVxiuW2isNrn4A4MGyUvsCQ0"
+        }, 
         "charity \u0441ards": {
             "applicationId": "X0UY3A7Y78VafC2i6LDnVce3FBd6WKN8TDXpHOkv", 
             "masterKey": "w5bfAGA7eOrRd2FKUVxiuW2isNrn4A4MGyUvsCQ0"
+        }, 
+        "qa cause i care": {
+            "applicationId": "q5uk1NhQDpJYQqHCpTBqr0lRcR0x3gu411GwQ3Pj", 
+            "masterKey": "PE2TSXLvhg0pXQDJ2EhklqzhQQK1Jw8ihg1jgcAk"
         }
     }, 
     "global": {

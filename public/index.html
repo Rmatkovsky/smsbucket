@@ -10,7 +10,7 @@
 
 
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script src="js/underscore-1.1.6.js"></script>
+    <script src="js/underscore-min.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
     <script src="js/init.js"></script>
     <meta property="og:title" content="Cause I care" />
@@ -46,9 +46,9 @@
     <script type="text/template" id="step6">
         <div class="step">
             <h4>godkend hilsen</h4>
-            <section style="border:1px solid black;border-radius:10px; margin: 2%;min-height: 217px; ">
+            <section class="step6">
                 <img src="<%= imageUrl %>" style="width: 75%"/>
-                <h5 style="text-align: left;overflow: overlay;"><%= greetingText %> </h5>
+                <h5 ><%= greetingText %> </h5>
             </section>
 
             <div class="navigation">

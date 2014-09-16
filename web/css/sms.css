@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'PalatinoItalicRegular';
+    src: url('../fonts/palatino-italic.eot');
+    src: url('../fonts/palatino-italic.eot') format('embedded-opentype'),
+    url('../fonts/palatino-italic.woff') format('woff'),
+    url('../fonts/palatino-italic.ttf') format('truetype'),
+    url('../fonts/palatino-italic.svg#PalatinoItalicRegular') format('svg');
+}
+
+html,body {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    font: 30px 'PalatinoItalicRegular';
+    line-height: 1.4em;
+    /*background: #eeeeee url('../images/bg.png');*/
+    /*color: #4d4d4d;*/
+    /*width: 550px;*/
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+h1 {
+    font-size:48px
+}
+h3 {
+    font-family: 'Helvetica';
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    margin-bottom: 20px;
+    color: black;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: left;
+    line-height: 30px;
+}
+h4 {
+    font-family: 'Helvetica';
+    color: #000;
+    font-size: 100%;
+    margin: 0;
+    /*padding-bottom: 20px;*/
+}
+h5 {
+    font-family: 'Helvetica';
+    color: #000;
+    font-size: 16px;
+    margin: 0;
+    text-align: left;
+    line-height: 20px;
+    padding-left: 3px;
+    padding-bottom: 3px;
+}
+p {
+    margin: 0;
+    font-size: 22px;
+    line-height: 30px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+img.default {
+    width: 70%;
+}
+img.facebook {
+    width: 55%;
+}
+#smsapp {
+    background: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    /*margin: 130px 0 40px 0;*/
+    /*border: 1px solid #ccc;*/
+    /*position: relative;*/
+    /*border-top-left-radius: 2px;*/
+    /*border-top-right-radius: 2px;*/
+    /*box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2),*/
+    /*0 25px 50px 0 rgba(0, 0, 0, 0.15);*/
+}
+.clear {
+    clear: both;
+}
+.default,
+.error,
+.smsblock,
+.confirmblock {
+    display: none;
+}
+
+.confirmblock p {
+    padding-top: 50px;
+}
+
+.confirmblock img {
+    width: 70%;
+}
+
+.smsblock .image {
+    width: 75%;
+}
+
+.content {
+    text-align: center;
+}
+
+.helvetic {
+    font-family: 'Helvetica';
+}

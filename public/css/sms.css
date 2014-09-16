@@ -104,6 +104,17 @@ h5 {
     width: 2em;
     height: 2em;
 }
+.step .step6 {
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 2%;
+    min-height: 217px;
+}
+.step .step6 h5 {
+    text-align: left;
+    overflow: overlay;
+}
+
 ul {
     display: inline-block;
     list-style: none;
