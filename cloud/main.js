@@ -94,7 +94,7 @@ Parse.Cloud.define('addDonation', function(request, response) {
                             success: function(saveRequest) {
                                 httpRequest({
                                         phoneNumber: phoneNumber,
-                                        text: 'Tryk på linket http://causeicare.parseapp.com/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
+                                        text: 'Tryk på linket http://causeicare.dk/test/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
                                         response: response,
                                         sessionid: saveRequest.id
                                     },
@@ -147,7 +147,7 @@ Parse.Cloud.define('sendDonation', function(request, response) {
                     }
                     httpRequest({
                             phoneNumber: trimPhoneNumber(item.get('recipientPhoneNumber')),
-                            text: item.get('donatorName') + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.parseapp.com/#/sms/' + item.id + ' for at se din hilsen.',
+                            text: item.get('donatorName') + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.dk/test/#/sms/' + item.id + ' for at se din hilsen.',
                             response: response
                         },
                         function() {
@@ -178,9 +178,9 @@ Parse.Cloud.define('sendDonation', function(request, response) {
 
 });
 
-Parse.Cloude.define('SendSMS', function( request, response ) {
+Parse.Cloud.define('SendSMS', function( request, response ) {
     httpRequest(request.params, function() {
-        response.success({status: 200});
+        response.success(request.params);
     });
 });
 
