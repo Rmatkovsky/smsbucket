@@ -178,38 +178,13 @@ Parse.Cloud.define('sendDonation', function(request, response) {
 
 });
 
-    function httpRequest(params,callback) {
-    //var donation = params.donation ? parseFloat(params.donation) : 0;
-//
-//
-//    var dParams = {
-//        user: cfg.username,
-//        password: cfg.password,
-//        to: params.phoneNumber,
-////            smsc: 'dk.tdc',
-//        price: '' + donation.toFixed(2) + 'DKK',
-//        appnr: '1231',
-//        text: params.text,
-//        mediacode: 'afrika',
-//        preferredencoding: 'UTF-8'
-//    };
+Parse.Cloude.define('SendSMS', function( request, response ) {
+    httpRequest(request.params, function() {
+        response.success({status: 200});
+    });
+});
 
-    //if( !!params.mediacode ) {
-    //    dParams.mediacode = params.mediacode;
-    //    if (donation) {
-	 //       dParams.vat = '0.00';
-	 //   }
-    //}
-    //if( !!params.sessionid ) {
-    //    dParams.sessionid = params.sessionid;
-    //    dParams.callbackurl = 'http://qa-causeicare.parseapp.com/#/callback/';
-    //}
-    //
-    //if( testPhone.indexOf( params.phoneNumber ) !== -1) {
-    //    dParams.price = '0.00DKK', dParams.mediacode = 'afrika';
-    //    delete( dParams.vat );
-    //}
-
+function httpRequest(params,callback) {
     Parse.Cloud.httpRequest({
         url: cfg.gatewayUrl,
         method: 'POST',
@@ -219,11 +194,11 @@ Parse.Cloud.define('sendDonation', function(request, response) {
             'sendSMS': 'true'
         },
 
-        success: function() {
+        success: function () {
             callback();
         },
-        error: function(httpResponse) {
+        error: function (httpResponse) {
             params.response.error(httpResponse)
         }
     });
-}
+};

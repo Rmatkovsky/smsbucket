@@ -27,7 +27,7 @@
                     ap.sms(query[1]);
                 }break;
                 case "confirm": {
-                    console.log('1')
+                    ap.confirm(query[1])
                 }break;
                 default: {
                     $('#default').show();
@@ -72,7 +72,7 @@
         </div>
         <div class="confirmblock">
             <p>
-                Tak for dit bidrag<br /> på <%= donation %> Kr. til Røde Kors. <br /><br />
+                Tak for dit bidrag<br /> på <span id="donation"></span> Kr. til Røde Kors. <br /><br />
                 Med venlig hilsen.<br /><br />
                 <a href="http://www.causeicare.dk">
                     <img src="/images/exclamation-mark.png" class="default" />
@@ -90,7 +90,9 @@
 
 <script>
     function fbShare(e) {
+
         window.open("http://www.facebook.com/sharer.php?u=https://itunes.apple.com/us/app/cause-i-care/id859109162?ls=1&mt=8","displayWindow","width=520,height=300,left=350,top=170,status=no,toolbar=no,menubar=no");
+        return false;
     }
 </script>
 </body>

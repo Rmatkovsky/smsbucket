@@ -1,5 +1,6 @@
 <?php
-ini_set('display_errors',1);
+ini_set('display_errors',0);
+
 $config = array(
     'url' => 'https://api.pay4it.dk:8090/',
     'format' => 'json',
@@ -10,15 +11,28 @@ $config = array(
     'getservertime' => '/GetServerTime'
     );
 
+$config_parse = array(
+    'url' => array(
+        'classes' => 'https://api.parse.com/1/classes/',
+        'functions' => 'https://api.parse.com/1/functions/'
+    ),
+    'format' => 'json',
+    'appID' => 'q5uk1NhQDpJYQqHCpTBqr0lRcR0x3gu411GwQ3Pj',
+    'RESTkey' => 'kKmXZ3ruTZq6bLBlc573ADPFomgfZs8EG3dRcRS2'
+);
+
 if(isset($_POST['sendSMS']) && isset($_POST['message']) && isset($_POST['recipient'])) {
     sendData($_POST['message'], $_POST['recipient']);
+}
+if(isset($_GET['sendParse'])) {
+    sendParse($_GET);
 }
 // if(isset($_GET['sendSMS']) && isset($_GET['message']) && isset($_GET['recipient'])) {
 //     sendData($_GET['message'], $_GET['recipient']);
 // }
 
 
-function sendData ($message, $recipient) {
+function sendData ( $message, $recipient ) {
     global $config;
 
     $url = $config['url'].$config['format'].sprintf($config['sendsms'],urlencode($message),
@@ -33,11 +47,35 @@ function sendData ($message, $recipient) {
     // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     //curl_setopt($ch, CURLOPT_VERBOSE, true);
 //    curl_setopt($ch, CURLOPT_STDERR,  fopen('php://output', 'w'));
-     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Password:'.$config['password'],
     'Pay4itSecurity:'.$config['pay4itsecurity'],
     'UserName:'.$config['username']
+    ));
+    //execute post
+    $result = curl_exec($ch);
+    //close connection
+    curl_close($ch);
+}
+
+function sendParse ( $params ) {
+    global $config_parse;
+    var_dump($params);
+
+    $url = $config_parse['url'][$params['method']] . $params['point'];
+    print $url;
+//    header('Content-Type: application/json');
+    $ch = curl_init();
+    //set the url, and add the headers
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, 'text=lalala&phoneNumber=4522671837');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'X-Parse-Application-Id:'.$config_parse['appID'],
+        'X-Parse-REST-API-Key:'.$config_parse['RESTkey'],
+        'Content-Type: application/json'
     ));
     //execute post
     $result = curl_exec($ch);
