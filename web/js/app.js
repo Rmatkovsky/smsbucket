@@ -18,7 +18,7 @@ var api = function (params) {
             'X-Parse-REST-API-Key': this.RESTkey
         }
     })
-        .error( function( ) {
+        .error( function( error ) {
             $('.error').show();
         });
 }
@@ -34,8 +34,8 @@ var app = function () {
             .done( function( data ) {
                 var image = api( {
                     method: 'classes',
-                    point: 'Pictures',
-                    objectId: data.imageId.objectId,
+                    point: (data.userImage) ? 'ImageFromUsers' : 'Pictures',
+                    objectId: (data.userImage) ?  data.imageFromUserId.objectId : data.imageId.objectId ,
                     type: 'GET',
                     where: ''
                 } );
@@ -43,7 +43,7 @@ var app = function () {
                 $('.smsblock').show();
                 $('.title').text(data.text);
                 image.done( function( dataImage ) {
-                    $('.smsblock .image').attr('src',dataImage.url_image.url);
+                    $('.smsblock .image').attr('src',(data.userImage) ? dataImage.image.url : dataImage.url_image.url);
                 });
             })
     };
@@ -66,29 +66,28 @@ var app = function () {
         } )
             .done( function( data ) {
                 if( data.results.length > 0 ) {
+                    $('.confirmblock').show();
+                    $('.confirmblock .title').text(data.results[0].text);
+                    $('.confirmblock #donation').text(data.results[0].donation);
+
                     api( {
                         method: 'functions',
                         point: '',
                         objectId: '',
                         data: {
+                            text: data.results[0].donatorName + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.dk/test/#/sms/' + data.results[0].objectId + ' for at se din hilsen.',
+                            phoneNumber: data.results[0].recipientPhoneNumber,
+                            sendSMS: true,
                             method: 'functions',
                             point: 'SendSMS',
-                            objectId: id
+                            objectId: id,
+                            sendParse: true
                         },
                         type: 'POST',
                         where: ''
-
-
-                    })
-                        .done( function( response ) {
-                            if( response.status == 200 ) {
-                                $('.confirmblock').show();
-                                $('.confirmblock .title').text(data.results[0].text);
-                                $('.confirmblock #donation').text(data.results[0].donation);
-                            };
-                        });
+                    });
 
                 };
-            });
+            }).error( function () {});
     };
 }

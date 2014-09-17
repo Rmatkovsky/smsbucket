@@ -65,6 +65,9 @@ h5 {
     padding-left: 3px;
     padding-bottom: 3px;
 }
+a {
+    text-transform: none;
+}
 p {
     margin: 0;
     font-size: 22px;
@@ -74,6 +77,7 @@ p {
     padding-right: 15px;
 }
 img.default {
+    display: inline;
     width: 70%;
 }
 img.facebook {

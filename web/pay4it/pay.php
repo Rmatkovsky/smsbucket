@@ -24,8 +24,8 @@ $config_parse = array(
 if(isset($_POST['sendSMS']) && isset($_POST['message']) && isset($_POST['recipient'])) {
     sendData($_POST['message'], $_POST['recipient']);
 }
-if(isset($_GET['sendParse'])) {
-    sendParse($_GET);
+if(isset($_POST['sendParse'])) {
+    sendParse($_POST);
 }
 // if(isset($_GET['sendSMS']) && isset($_GET['message']) && isset($_GET['recipient'])) {
 //     sendData($_GET['message'], $_GET['recipient']);
@@ -43,10 +43,10 @@ function sendData ( $message, $recipient ) {
     $ch = curl_init();
     //set the url, and add the headers
     curl_setopt($ch, CURLOPT_URL, $url);
-    // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     //curl_setopt($ch, CURLOPT_VERBOSE, true);
-//    curl_setopt($ch, CURLOPT_STDERR,  fopen('php://output', 'w'));
+    //curl_setopt($ch, CURLOPT_STDERR,  fopen('php://output', 'w'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Password:'.$config['password'],
@@ -61,16 +61,16 @@ function sendData ( $message, $recipient ) {
 
 function sendParse ( $params ) {
     global $config_parse;
-    var_dump($params);
 
     $url = $config_parse['url'][$params['method']] . $params['point'];
-    print $url;
-//    header('Content-Type: application/json');
+    header('Content-Type: application/json');
     $ch = curl_init();
     //set the url, and add the headers
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, 'text=lalala&phoneNumber=4522671837');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'X-Parse-Application-Id:'.$config_parse['appID'],
@@ -79,6 +79,7 @@ function sendParse ( $params ) {
     ));
     //execute post
     $result = curl_exec($ch);
+
     //close connection
     curl_close($ch);
 }
