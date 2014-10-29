@@ -12,34 +12,6 @@ function trimPhoneNumber(phone) {
 	return trimmedPhone;
 };
 
-Parse.Cloud.define('jqueryAjax', function(request,response) {
-    Parse.Cloud.httpRequest({
-        url: cfg.unwireUrl,
-        success: function(httpResponse) {
-            response.success(httpResponse)
-
-        },
-        error: function(httpResponse) {
-            response.error(httpResponse)
-        }
-    });
-    // request.jQuery.ajax(
-    //     {
-    //         url:'https://api.pay4it.dk:8090/json/SendSMS',
-    //         type: 'GET',
-    //         data: {
-    //             'Message': 'Hello Ciklum 4 part',
-    //             'Recipient': '4522671837'
-    //         },
-    //         headers: {
-    //             'UserName':'ji@cphpress.com',
-    //             'Password': 'e8d34dcd-fb24-4ae5-9591-31a0abe38eb9',
-    //             'Pay4itSecurity': 'e18bb807-5b12-40f3-ad22-0d3a2af8be0e'
-    //         }
-    //     }
-    // ).done(function(data){response.success(data)})
-});
-
 Parse.Cloud.define('addDonation', function(request, response) {
 
     var phoneNumber = request.params.phoneNumber;
@@ -83,6 +55,7 @@ Parse.Cloud.define('addDonation', function(request, response) {
                         requests.set("recipientPhoneNumber", recipientPhoneNumber);
                         requests.set("userImage", !!request.params.userImage);
                         requests.set("text","" + request.params.greetingText);
+                        requests.set("charityName","" + charity.get('charityName'));
                         requests.set("used", false);
                         if(request.params.userImage) {
                             requests.set("imageFromUserId", images);
@@ -93,17 +66,16 @@ Parse.Cloud.define('addDonation', function(request, response) {
                         requests.save(null, {
                             success: function(saveRequest) {
                                 httpRequest({
-                                        phoneNumber: phoneNumber,
-                                        text: 'Tryk på linket http://causeicare.dk/test/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til Røde Kors',
-                                        response: response,
-                                        sessionid: saveRequest.id
+                                        recipient: phoneNumber,
+                                        message: 'Tryk på linket http://causeicare.dk/test/#/confirm/' + saveRequest.id + ' for at bekræfte din hilsen samt din donation til ' + charity.get('charityName'),
+                                        sessionid: saveRequest.id,
+                                        sendSMS: true
                                     },
                                     function( ) {
                                         response.success({status: 200});
-                                    });
+                                    }, response);
                             },
                             error: function(request) {
-
                                 response.error(request);
                             }
                         })
@@ -131,40 +103,40 @@ Parse.Cloud.define('addDonation', function(request, response) {
 Parse.Cloud.define('sendDonation', function(request, response) {
 
     var Requests = Parse.Object.extend("Requests"),
-        requestsQuery = new Parse.Query("Requests"),
+        requestsQuery = new Parse.Query(Requests),
+        confirmId = request.params.confirmId,
         mediacode = null;
 
 
 
-    if(!!request.params.confirmId ) {
-            requestsQuery.get(request.params.confirmId,{
+    if( !!confirmId ) {
+
+        requestsQuery.get(confirmId,{
                 success: function(item){
-                    switch(item.get('donation')+'') {
-                        case '25': mediacode = 'bouquet25';break;
-                        case '50': mediacode = 'bouquet50';break;
-                        case '75': mediacode = 'bouquet75';break;
-                        case '100': mediacode = 'bouquet100';break;
-                    }
+
+                    if(item.get('used')) {
+                       return response.error({status: 400});
+                    };
+
                     httpRequest({
-                            phoneNumber: trimPhoneNumber(item.get('recipientPhoneNumber')),
-                            text: item.get('donatorName') + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.dk/test/#/sms/' + item.id + ' for at se din hilsen.',
-                            response: response
+                            recipient: trimPhoneNumber(item.get('recipientPhoneNumber')),
+                            message: item.get('donatorName') + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.dk/test/#/sms/' + item.id + ' for at se din hilsen.',
+                            sendSMS: true
                         },
                         function() {
                             httpRequest({
-                                    phoneNumber: trimPhoneNumber(item.get('phoneNumber')),
+                                    recipient: trimPhoneNumber(item.get('phoneNumber')),
                                     sessionid: item.id,
-                                    donation: item.get('donation'),
-                                    text: 'Tak for dit bidrag på ' + item.get('donation') + ' Kr til Røde Kors. Med venlig hilsen Cause I Care',
-                                    response: response,
-                                    mediacode: mediacode
+                                    amount: 1,//item.get('donation'),
+                                    message: 'Tak for dit bidrag på ' + item.get('donation') + ' Kr til ' + item.get('charityName') + '. Med venlig hilsen Cause I Care',
+                                    sendPaySMS: true
                                 },
                                 function( ) {
                                     item.set("used",true);
                                     item.save();
-                                    response.success({status: 200});
-                                })
-                        })
+                                    response.success({status: 200, text: item.get('text'), donation: item.get('donation'), charityName: item.get('charityName')});
+                                },response)
+                        },response)
 
                 },
                 error: function() {
@@ -180,25 +152,21 @@ Parse.Cloud.define('sendDonation', function(request, response) {
 
 Parse.Cloud.define('SendSMS', function( request, response ) {
     httpRequest(request.params, function() {
-        response.success(request.params);
+        response.success({status: 200});
     });
 });
 
-function httpRequest(params,callback) {
+function httpRequest(params,callback,response) {
     Parse.Cloud.httpRequest({
         url: cfg.gatewayUrl,
         method: 'POST',
-        body: {
-            'message': params.text,
-            'recipient': params.phoneNumber,
-            'sendSMS': 'true'
-        },
+        body: params,
 
-        success: function () {
+        success: function ( ) {
             callback();
         },
         error: function (httpResponse) {
-            params.response.error(httpResponse)
+            response.error(httpResponse)
         }
     });
 };

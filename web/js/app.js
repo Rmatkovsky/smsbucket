@@ -19,6 +19,7 @@ var api = function (params) {
         }
     })
         .error( function( error ) {
+            $('.div-block').hide();
             $('.error').show();
         });
 }
@@ -41,53 +42,45 @@ var app = function () {
                 } );
 
                 $('.smsblock').show();
-                $('.title').text(data.text);
+                $('.smsblock .title').text(data.text);
+                $('.smsblock .charity').text(data.charityName);
                 image.done( function( dataImage ) {
+                    $('.div-block').hide();
                     $('.smsblock .image').attr('src',(data.userImage) ? dataImage.image.url : dataImage.url_image.url);
+                    $('.smsblock #link').attr('href',(data.userImage) ? dataImage.image.url : dataImage.url_image.url);
                 });
             })
     };
 
     this.confirm = function( id ) {
-        var where = {
-            "used": {
-                "$exists": true
-            },
-            "objectId": {
-                "$in": [id]
-            }
-        }
+
         api( {
-            method: 'classes',
-            point:'Requests',
+            method: 'functions',
+            point: '',
             objectId: '',
-            type: 'GET',
-            where: '?where='+ JSON.stringify( where )
+            sendParse: true,
+            type: 'POST',
+            where: '',
+            data: {
+                method: 'functions',
+                point: 'sendDonation',
+                confirmId: id,
+                sendParse: true
+            }
         } )
             .done( function( data ) {
-                if( data.results.length > 0 ) {
-                    $('.confirmblock').show();
-                    $('.confirmblock .title').text(data.results[0].text);
-                    $('.confirmblock #donation').text(data.results[0].donation);
-
-                    api( {
-                        method: 'functions',
-                        point: '',
-                        objectId: '',
-                        data: {
-                            text: data.results[0].donatorName + ' har sendt dig en hilsen via Cause I Care. Tryk på linket http://causeicare.dk/test/#/sms/' + data.results[0].objectId + ' for at se din hilsen.',
-                            phoneNumber: data.results[0].recipientPhoneNumber,
-                            sendSMS: true,
-                            method: 'functions',
-                            point: 'SendSMS',
-                            objectId: id,
-                            sendParse: true
-                        },
-                        type: 'POST',
-                        where: ''
-                    });
-
+                if( !!data.error && JSON.parse(data.error).status == '400' ) {
+                    $('.div-block').hide();
+                    $('.error .title').text('Beskeden er bekræftet');
+                    return $('.error').show();
                 };
-            }).error( function () {});
+                if( data.result.status == "200" ) {
+                    $('.div-block').hide();
+                    $('.confirmblock').show();
+                    $('.confirmblock .title').text(data.result.text);
+                    $('.confirmblock #donation').text(data.result.donation);
+                    $('.confirmblock .charity').text(data.result.charityName);
+                };
+            });
     };
 }

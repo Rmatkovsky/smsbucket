@@ -103,7 +103,13 @@ img.facebook {
 .confirmblock {
     display: none;
 }
-
+.div-block {
+    display: fixed;
+}
+.div-block .spinner {
+    text-align: center;
+    margin-top: 45%;
+}
 .confirmblock p {
     padding-top: 50px;
 }

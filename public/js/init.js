@@ -305,24 +305,23 @@ $(function() {
 //                        }
 //            });
 
-            //Parse.Cloud.run('addDonation',{
-            //    "senderName": "Sdfs",
-            //    "photoId": "NsybvX5whw",
-            //    "userImage": true,
-            //    "charityId": "9B2D1884Io",
-            //    "phoneNumber": "4522671837",
-            //    "donate": 50,
-            //    "senderEmail": "Ewr",
-            //    "greetingText": "Please create all AD, FD, ITD, Travel Requests and requests to other Ciklum departments in new ServiceDesk, and please update your bookmarks.",
-            //    "recipientPhoneNumber": "4522671837"
-            //},{
-            //    success: function(res){
-            //        console.log(res)
-            //    },
-            //    error: function(res) {
-            //        console.log(res)
-            //    }
-            //});
+            Parse.Cloud.run('addDonation',{
+                "senderName": "Alexej",
+                "photoId": "HonTmqfzwX",
+                "charityId": "rIsOMyAKj1",
+                "phoneNumber": "4522671837",
+                "donate": 75,
+                "senderEmail": "achu@ciklum.com",
+                "greetingText": " Hello my dear!",
+                "recipientPhoneNumber": "4522671837"
+            },{
+                success: function(res){
+                    console.log(res)
+                },
+                error: function(res) {
+                    console.log(res)
+                }
+            });
         },
         sms: function(id) {
             new AppView({hash:id,view: 'sms'});

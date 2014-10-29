@@ -8,6 +8,7 @@ $config = array(
     'password' => 'e8d34dcd-fb24-4ae5-9591-31a0abe38eb9',
     'pay4itsecurity' => 'e18bb807-5b12-40f3-ad22-0d3a2af8be0e',
     'sendsms' => '/SendSMS?Message=%s&Recipient=%s',
+    'sendpaysms' => '/FastCheckOut?MSISDN=%s&MessageBody=%s&Amount=%s&IsMobilPengeTransaction=false',
     'getservertime' => '/GetServerTime'
     );
 
@@ -22,7 +23,11 @@ $config_parse = array(
 );
 
 if(isset($_POST['sendSMS']) && isset($_POST['message']) && isset($_POST['recipient'])) {
-    sendData($_POST['message'], $_POST['recipient']);
+    sendSMS($_POST['message'], $_POST['recipient']);
+}
+if(isset($_POST['sendPaySMS']) && isset($_POST['message']) && isset($_POST['amount']) &&
+    isset($_POST['recipient'])) {
+    sendPaySMS($_POST);
 }
 if(isset($_POST['sendParse'])) {
     sendParse($_POST);
@@ -32,7 +37,7 @@ if(isset($_POST['sendParse'])) {
 // }
 
 
-function sendData ( $message, $recipient ) {
+function sendSMS ( $message, $recipient ) {
     global $config;
 
     $url = $config['url'].$config['format'].sprintf($config['sendsms'],urlencode($message),
@@ -58,6 +63,24 @@ function sendData ( $message, $recipient ) {
     //close connection
     curl_close($ch);
 }
+
+function sendPaySMS ( $params ) {
+    global $config;
+
+    $url = $config['url'].$config['format'].sprintf($config['sendpaysms'],$params['recipient'],urlencode($params['message']),$params['amount']);
+    header('Content-Type: application/json');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Password:'.$config['password'],
+        'Pay4itSecurity:'.$config['pay4itsecurity'],
+        'UserName:'.$config['username']
+    ));
+    $result = curl_exec($ch);
+    curl_close($ch);
+}
+
 
 function sendParse ( $params ) {
     global $config_parse;
